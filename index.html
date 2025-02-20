@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login</title>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css">
+    <style>
+        body {
+            height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            flex-direction: column; /* Aggiungi per mettere il form sotto l'immagine */
+            background-color: #f8f9fa;
+            margin: 0;
+        }
+        .logo {
+            max-width: 15%;
+            height: auto;
+            margin-bottom: 20px; /* Aggiungi margine per distanziare l'immagine dal form */
+        }
+        .login-container {
+            max-width: 400px;
+            width: 100%;
+            padding: 20px;
+            background-color: white;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            border-radius: 8px;
+            text-align: center;
+        }
+    </style>
+</head>
+<body>
+    <img src="images/2025-02-04_22.44.27-removebg-preview.png" alt="logo smd" class="logo">
+    <div class="login-container">
+        <h2 class="text-center">Login</h2>
+        <form id="loginForm">
+            <div class="form-group">
+                <label for="username">Username</label>
+                <input type="text" class="form-control" id="username" required>
+            </div>
+            <div class="form-group">
+                <label for="password">Password</label>
+                <input type="password" class="form-control" id="password" required>
+            </div>
+            <button type="submit" class="btn btn-primary btn-block">Login</button>
+        </form>
+        <div id="error" class="text-danger mt-3" style="display: none;">Username o password errati</div>
+    </div>
+
+    <script>
+        document.getElementById('loginForm').addEventListener('submit', function(event) {
+            event.preventDefault();
+            const username = document.getElementById('username').value;
+            const password = document.getElementById('password').value;
+    
+            fetch('https://script.google.com/macros/s/AKfycbzB8--8kIRrK836CMn2iYLI4cN6KtRWvKIng1WJqzEioh5fbPdPA614RSNBvjt9krsX3Q/exec', {
+                method: 'POST',
+                body: new URLSearchParams({
+                    username: username,
+                    password: password
+                })
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    localStorage.setItem('authenticated', 'true');
+                    localStorage.setItem('role', data.role); // Salvo il ruolo dell'utente
+                    window.location.href = 'old_index.html';
+                } else {
+                    document.getElementById('error').style.display = 'block';
+                }
+            });
+        });
+    </script>
+    <div class="supporto">Per supporto @laapuissancee 📲</div>
+</body>
+</html>
