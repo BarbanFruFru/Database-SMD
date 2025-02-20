@@ -56,11 +56,27 @@
             <div class="form-group">
                 <input type="text" class="form-control" name="carcerato" placeholder="Carcerato" required>
             </div>
-            <button type="submit" class="btn btn-primary">Invia</button>
+            <div class="form-group">
+                <textarea class="form-control" name="motivo" rows="3" placeholder="Motivo" required></textarea>
+            </div>
+            <div class="form-group">
+                <input type="text" class="form-control" name="luogo" placeholder="Luogo" required>
+            </div>
+            <div class="form-group">
+                <input type="date" class="form-control" name="data" required>
+            </div>
+            <div class="form-group">
+                <input type="time" class="form-control" name="ora" required>
+            </div>
+            <div class="form-group">
+                <textarea class="form-control" name="colleghi_presenti" rows="3" placeholder="Colleghi presenti" required></textarea>
+            </div>
+            <input type="submit" class="btn btn-primary btn-block" value="Invia">
         </form>
     </div>
 
     <script>
+        const scriptURL = 'https://script.google.com/macros/s/AKfycbzfU6d1J8GzPEkqriFDBOREhWM2zy10xcp-IpPWdqs7qPBQiy_QTwezCCd4QRlrHqjc6Q/exec';
         const form = document.querySelector('#moduloArresto');
 
         form.addEventListener('submit', e => {
