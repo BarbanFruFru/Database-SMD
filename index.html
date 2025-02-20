@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Login</title>
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
     <style>
         body {
             height: 100vh;
@@ -39,6 +40,9 @@
             transform: translateY(-50%);
             cursor: pointer;
         }
+        .toggle-password i {
+            transition: transform 0.3s ease;
+        }
     </style>
 </head>
 <body>
@@ -53,7 +57,7 @@
             <div class="form-group password-container">
                 <label for="password">Password</label>
                 <input type="password" class="form-control" id="password" required>
-                <span class="toggle-password">👁️</span>
+                <span class="toggle-password"><i class="fas fa-eye"></i></span>
             </div>
             <button type="submit" class="btn btn-primary btn-block">Login</button>
         </form>
@@ -65,7 +69,9 @@
             const passwordField = document.getElementById('password');
             const type = passwordField.getAttribute('type') === 'password' ? 'text' : 'password';
             passwordField.setAttribute('type', type);
-            this.textContent = type === 'password' ? '🔒' : '🔓';
+            const icon = this.querySelector('i');
+            icon.classList.toggle('fa-eye');
+            icon.classList.toggle('fa-eye-slash');
         });
 
         document.getElementById('loginForm').addEventListener('submit', function(event) {
