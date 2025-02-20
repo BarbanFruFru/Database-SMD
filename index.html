@@ -12,16 +12,11 @@
             display: flex;
             justify-content: center;
             align-items: center;
-            flex-direction: column; /* Aggiungi per mettere il form sotto l'immagine */
             background-color: #f8f9fa;
             margin: 0;
         }
-        .logo {
-            max-width: 15%;
-            height: auto;
-            margin-bottom: 20px; /* Aggiungi margine per distanziare l'immagine dal form */
-        }
         .login-container {
+            position: relative;
             max-width: 400px;
             width: 100%;
             padding: 20px;
@@ -29,6 +24,14 @@
             box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
             border-radius: 8px;
             text-align: center;
+        }
+        .logo {
+            position: absolute;
+            top: 50%;
+            right: -50px; /* Regola questa distanza in base alle tue esigenze */
+            transform: translateY(-50%);
+            max-width: 50px; /* Regola la dimensione del logo */
+            height: auto;
         }
         .password-container {
             position: relative;
@@ -46,8 +49,8 @@
     </style>
 </head>
 <body>
-    <img src="images/2025-02-04_22.44.27-removebg-preview.png" alt="logo smd" class="logo">
     <div class="login-container">
+        <img src="images/2025-02-04_22.44.27-removebg-preview.png" alt="logo smd" class="logo">
         <h2 class="text-center">Login</h2>
         <form id="loginForm">
             <div class="form-group">
