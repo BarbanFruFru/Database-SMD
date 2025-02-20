@@ -65,40 +65,44 @@
         <div id="error" class="text-danger mt-3" style="display: none;">Username o password errati</div>
     </div>
 
-    <script>
-        document.querySelector('.toggle-password').addEventListener('click', function () {
-            const passwordField = document.getElementById('password');
-            const type = passwordField.getAttribute('type') === 'password' ? 'text' : 'password';
-            passwordField.setAttribute('type', type);
-            const icon = this.querySelector('i');
-            icon.classList.toggle('fa-eye');
-            icon.classList.toggle('fa-eye-slash');
-        });
+<script>
+    document.querySelector('.toggle-password').addEventListener('click', function () {
+        const passwordField = document.getElementById('password');
+        const type = passwordField.getAttribute('type') === 'password' ? 'text' : 'password';
+        passwordField.setAttribute('type', type);
+        const icon = this.querySelector('i');
+        icon.classList.toggle('fa-eye');
+        icon.classList.toggle('fa-eye-slash');
+    });
 
-        document.getElementById('loginForm').addEventListener('submit', function(event) {
-            event.preventDefault();
-            const username = document.getElementById('username').value;
-            const password = document.getElementById('password').value;
-    
-            fetch('https://script.google.com/macros/s/AKfycbzB8--8kIRrK836CMn2iYLI4cN6KtRWvKIng1WJqzEioh5fbPdPA614RSNBvjt9krsX3Q/exec', {
-                method: 'POST',
-                body: new URLSearchParams({
-                    username: username,
-                    password: password
-                })
+    document.getElementById('loginForm').addEventListener('submit', function(event) {
+        event.preventDefault();
+        const username = document.getElementById('username').value;
+        const password = document.getElementById('password').value;
+
+        // Memorizza l'username in localStorage
+        localStorage.setItem('username', username);
+
+        fetch('https://script.google.com/macros/s/AKfycbzB8--8kIRrK836CMn2iYLI4cN6KtRWvKIng1WJqzEioh5fbPdPA614RSNBvjt9krsX3Q/exec', {
+            method: 'POST',
+            body: new URLSearchParams({
+                username: username,
+                password: password
             })
-            .then(response => response.json())
-            .then(data => {
-                if (data.success) {
-                    localStorage.setItem('authenticated', 'true');
-                    localStorage.setItem('role', data.role); // Salvo il ruolo dell'utente
-                    window.location.href = 'old_index.html';
-                } else {
-                    document.getElementById('error').style.display = 'block';
-                }
-            });
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                localStorage.setItem('authenticated', 'true');
+                localStorage.setItem('role', data.role); // Salvo il ruolo dell'utente
+                window.location.href = 'old_index.html';
+            } else {
+                document.getElementById('error').style.display = 'block';
+            }
         });
-    </script>
+    });
+</script>
+
     <div class="supporto">Per supporto @laapuissancee 📲</div>
 </body>
 </html>
