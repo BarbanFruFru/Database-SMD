@@ -12,33 +12,25 @@
         <div class="max-w-7xl mx-auto">
             <div class="flex justify-between items-center mb-6">
                 <h1 class="text-3xl font-bold">Dashboard Rapporti</h1>
-                <button onclick="window.location.href='old_index.html'" class="bg-gray-500 text-white px-4 py-2 rounded">
-                    Torna Indietro
-                </button>
+                <div>
+                    <button onclick="openCreateModal()" class="bg-green-500 text-white px-4 py-2 rounded">Crea Rapporto</button>
+                    <button onclick="window.location.href='old_index.html'" class="bg-gray-500 text-white px-4 py-2 rounded">Torna Indietro</button>
+                </div>
             </div>
 
             <div class="mb-6 flex gap-4">
-                <select id="typeFilter" class="border rounded p-2">
-                    <option value="all">Tutti i tipi</option>
-                    <option value="Arresto">Arresto</option>
-                    <option value="Sequestro">Sequestro</option>
-                    <option value="Multa">Multa</option>
-                    <option value="Servizio">Servizio</option>
-                </select>
-                <input type="date" id="dateFilter" class="border rounded p-2">
-                <button onclick="applyFilters()" class="bg-blue-500 text-white px-4 py-2 rounded">
-                    Applica Filtri
-                </button>
+                <input type="text" id="searchFilter" placeholder="Cerca..." class="border rounded p-2 w-1/3">
+                <button onclick="applyFilters()" class="bg-blue-500 text-white px-4 py-2 rounded">Applica Filtri</button>
             </div>
 
             <div class="bg-white rounded-lg shadow overflow-x-auto">
                 <table class="min-w-full">
                     <thead class="bg-gray-50">
                         <tr>
+                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Soggetto</th>
+                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Tipologia</th>
                             <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Data</th>
-                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Tipo</th>
-                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Agente</th>
-                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Dettagli</th>
+                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Operatore</th>
                             <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Azioni</th>
                         </tr>
                     </thead>
@@ -48,140 +40,84 @@
         </div>
     </div>
 
-    <div id="detailsModal" class="hidden fixed inset-0 bg-gray-600 bg-opacity-50 overflow-y-auto h-full w-full">
-        <div class="relative top-20 mx-auto p-5 border w-96 shadow-lg rounded-md bg-white">
-            <div id="modalContent" class="mt-3"></div>
-            <div class="mt-4 flex justify-end">
-                <button onclick="closeModal()" class="bg-gray-500 text-white px-4 py-2 rounded">
-                    Chiudi
-                </button>
-            </div>
+    <!-- Modal per creazione/modifica rapporto -->
+    <div id="modalForm" class="hidden fixed inset-0 bg-gray-600 bg-opacity-50 flex items-center justify-center">
+        <div class="bg-white p-6 rounded-lg shadow-lg w-96">
+            <h2 class="text-xl font-bold mb-4">Gestisci Rapporto</h2>
+            <input type="hidden" id="rowIndex">
+            <input type="text" id="soggetto" placeholder="Soggetto" class="border p-2 w-full mb-2">
+            <input type="text" id="tipologia" placeholder="Tipologia" class="border p-2 w-full mb-2">
+            <input type="date" id="data" class="border p-2 w-full mb-2">
+            <input type="text" id="operatore" placeholder="Operatore" class="border p-2 w-full mb-2">
+            <button onclick="saveReport()" class="bg-blue-500 text-white px-4 py-2 rounded w-full">Salva</button>
+            <button onclick="closeModal()" class="bg-gray-500 text-white px-4 py-2 rounded w-full mt-2">Chiudi</button>
         </div>
     </div>
 
     <script>
-        let reportData = {};
-
         async function loadSheetData() {
-            try {
-                const response = await fetch('https://script.google.com/macros/s/AKfycbw4WBwQ2RolwMDETAvZz9Snfqhsli_hA63dXwF6NCBc_PxiUB7WsX7SZo-fpZNhDU1FEw/exec');
-                reportData = await response.json();
-                displayData(reportData);
-            } catch (err) {
-                console.error('Errore nel caricamento:', err);
-            }
-        }
-
-        function formatDate(isoDate) {
-            if (!isoDate) return "N/A";
-            return new Date(isoDate).toLocaleDateString();
+            const response = await fetch('https://script.google.com/macros/s/AKfycby5YcHh8ReMurA-LufbCRJG9rblHbezcFRGvlgeN0sa1n8v3xG9fzVLunBA4qXWcWv9aQ/exec');
+            const data = await response.json();
+            displayData(data);
         }
 
         function displayData(data) {
             const tbody = document.getElementById('reportsTable');
             tbody.innerHTML = '';
-
-            Object.keys(data).forEach(type => {
-                data[type].forEach((row, index) => {
-                    const tr = document.createElement('tr');
-                    tr.innerHTML = `
-                        <td class="px-6 py-4 whitespace-nowrap">${formatDate(row["Data"])}</td>
-                        <td class="px-6 py-4 whitespace-nowrap">${type}</td>
-                        <td class="px-6 py-4 whitespace-nowrap">${row["Nome (IGN)"]}</td>
-                        <td class="px-6 py-4 whitespace-nowrap">
-                            <button onclick="showDetails('${type}', ${index})" class="text-blue-600 hover:text-blue-900">
-                                Vedi Dettagli
-                            </button>
-                        </td>
-                        <td class="px-6 py-4 whitespace-nowrap">
-                            <button onclick="deleteReport('${type}', ${index})" class="text-red-600 hover:text-red-900">
-                                Elimina
-                            </button>
-                        </td>
-                    `;
-                    tbody.appendChild(tr);
-                });
+            data.forEach(row => {
+                const tr = document.createElement('tr');
+                tr.innerHTML = `
+                    <td class="px-6 py-4">${row.Soggetto}</td>
+                    <td class="px-6 py-4">${row.Tipologia}</td>
+                    <td class="px-6 py-4">${row.Data}</td>
+                    <td class="px-6 py-4">${row.Operatore}</td>
+                    <td class="px-6 py-4">
+                        <button onclick='editReport(${JSON.stringify(row)})' class="text-blue-600 hover:text-blue-900">Modifica</button>
+                        <button onclick='deleteReport(${row.rowIndex})' class="text-red-600 hover:text-red-900 ml-2">Elimina</button>
+                    </td>
+                `;
+                tbody.appendChild(tr);
             });
         }
 
-        async function deleteReport(type, index) {
-            const confirmDelete = confirm("Sei sicuro di voler eliminare questo rapporto?");
-            if (!confirmDelete) return;
-
-            try {
-                const response = await fetch('https://script.google.com/macros/s/AKfycbw4WBwQ2RolwMDETAvZz9Snfqhsli_hA63dXwF6NCBc_PxiUB7WsX7SZo-fpZNhDU1FEw/exec', {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ 
-                        action: "delete", 
-                        sheet: reportData[type][index]._sheetName, 
-                        row: reportData[type][index]._rowIndex 
-                    })
-                });
-
-                const result = await response.json();
-                if (result.success) {
-                    alert("Rapporto eliminato con successo!");
-                    loadSheetData(); // Ricarica la tabella
-                } else {
-                    alert("Errore durante l'eliminazione: " + result.error);
-                }
-            } catch (error) {
-                console.error("Errore:", error);
-                alert("Errore nella richiesta al server");
-            }
+        function openCreateModal() {
+            document.getElementById('modalForm').classList.remove('hidden');
         }
-        
-        function showDetails(type, index) {
-            const row = reportData[type][index];
-            const modalContent = document.getElementById('modalContent');
-            let detailsHtml = `<h3 class="text-lg font-medium text-gray-900 mb-4">Dettagli ${type}</h3>`;
-            for (const [key, value] of Object.entries(row)) {
-                if (key !== '_sheetName' && key !== '_rowIndex') {
-                    const displayValue = key === 'Data' ? formatDate(value) : value;
-                    detailsHtml += `<p><strong>${key}:</strong> ${displayValue || "N/D"}</p>`;
-                }
-            }
-
-            modalContent.innerHTML = detailsHtml;
-            document.getElementById('detailsModal').classList.remove('hidden');
-        } 
 
         function closeModal() {
-            document.getElementById('detailsModal').classList.add('hidden');
+            document.getElementById('modalForm').classList.add('hidden');
         }
 
-        function applyFilters() {
-            const typeFilter = document.getElementById('typeFilter').value;
-            const dateFilter = document.getElementById('dateFilter').value;
-
-            const filteredData = {};
-            Object.keys(reportData).forEach(type => {
-                if (typeFilter === 'all' || type === typeFilter) {
-                    filteredData[type] = reportData[type].filter(row => !dateFilter || row["Data"] === dateFilter);
-                }
+        async function saveReport() {
+            const report = {
+                soggetto: document.getElementById('soggetto').value,
+                tipologia: document.getElementById('tipologia').value,
+                data: document.getElementById('data').value,
+                operatore: document.getElementById('operatore').value
+            };
+            
+            const response = await fetch('https://script.google.com/macros/s/AKfycby5YcHh8ReMurA-LufbCRJG9rblHbezcFRGvlgeN0sa1n8v3xG9fzVLunBA4qXWcWv9aQ/exec', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ action: 'add', sheetName: 'Documenti', record: report })
             });
-            displayData(filteredData);
+            
+            const result = await response.json();
+            alert(result.message);
+            closeModal();
+            loadSheetData();
         }
-
+        
+        async function deleteReport(rowIndex) {
+            await fetch('https://script.google.com/macros/s/AKfycby5YcHh8ReMurA-LufbCRJG9rblHbezcFRGvlgeN0sa1n8v3xG9fzVLunBA4qXWcWv9aQ/exec', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ action: 'delete', sheetName: 'Documenti', rowIndex })
+            });
+            loadSheetData();
+        }
+        
         document.addEventListener('DOMContentLoaded', loadSheetData);
     </script>
-    <script>
-        window.onscroll = function () {
-            const btn = document.getElementById("scrollToTopBtn");
-            if (document.documentElement.scrollTop > 200) {
-                btn.classList.remove("hidden");
-            } else {
-                btn.classList.add("hidden");
-            }
-        };
-
-        function scrollToTop() {
-            window.scrollTo({ top: 0, behavior: "smooth" });
-        }
-    </script>
-    <button id="scrollToTopBtn" onclick="scrollToTop()" class="fixed bottom-4 right-4 bg-blue-600 text-white p-3 rounded-full shadow-lg hidden">
-        ↑
-    </button>
 </body>
 </html>
