@@ -58,7 +58,7 @@
             }
             
             // Crea le intestazioni della tabella
-            Object.keys(data[0]).forEach(col => {
+            Object.keys(data[1]).forEach(col => {
                 if (col !== '_sheetName' && col !== '_rowIndex') {
                     thead.innerHTML += `<th class='px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider'>${col}</th>`;
                 }
