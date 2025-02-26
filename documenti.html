@@ -112,35 +112,37 @@
     </div>
 
     <script>
-        const scriptURL = 'https://script.google.com/macros/s/AKfycbxWbbJiAkUe3SnzONETksQm3yaIfDWCxAut-6VIcL-rtf60XmIgofOK5sS3XucEQz9eVw/exec';
+        const scriptURL = 'https://script.google.com/macros/s/AKfycbzM8vVgySos-4ctT8edE57W7OtVR4HZzWdMuQBch2ODrSaNWB6cq3brDeXYowhI5uWPqA/exec';
         const form = document.querySelector('#Documenti');
         const submitButton = document.getElementById('submitButton');
-
-
+    
         form.addEventListener('submit', e => {
             e.preventDefault();
             
             // Disabilita il pulsante e cambia il testo
             submitButton.disabled = true;
             submitButton.innerHTML = '<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span> Invio in corso...';
-
+    
             fetch(scriptURL, { 
                 method: 'POST', 
                 body: new FormData(form)
             })
-            .then(response => {
-                if (!response.ok) {
-                    throw new Error("Errore nella richiesta al server.");
+            .then(response => response.text()) // Cambiato da response.json() a response.text()
+            .then(text => {
+                let data;
+                try {
+                    data = JSON.parse(text);
+                } catch (e) {
+                    console.error('Errore nel parsing della risposta:', text);
+                    throw new Error("Errore nella risposta del server");
                 }
-                return response.json();
-            })
-            .then(data => {
+    
                 if (data.error) {
                     throw new Error(data.error);
                 }
+                
                 alert("Rapporto inviato correttamente.");
                 form.reset();
-                
             })
             .catch(error => {
                 alert("Errore durante l'invio del modulo: " + error.message);
