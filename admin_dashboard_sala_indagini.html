@@ -44,7 +44,7 @@
     <script>
         async function loadSheetData() {
             const sheet = document.getElementById('sheetFilter').value;
-            const response = await fetch(`https://script.google.com/macros/s/AKfycbyYlREbE9saziNUjAF-zS434FW_PiZWIEIYS02qImUnszqnQabxjM9UC7jNvYrRANSauw/exec?sheet=${sheet}`);
+            const response = await fetch(`https://script.google.com/macros/s/AKfycbw6-L0DhySH_wGQ7Ea3zcB03tdwOPpbBveVdfbFqPji95JcWpreJwABRdacPpiuMzYUJw/exec`);
             const data = await response.json();
             displayData(sheet, data[sheet]);
         }
@@ -80,7 +80,7 @@
         }
 
         async function deleteReport(sheet, rowIndex) {
-            await fetch('https://script.google.com/macros/s/AKfycbyYlREbE9saziNUjAF-zS434FW_PiZWIEIYS02qImUnszqnQabxjM9UC7jNvYrRANSauw/exec', {
+            await fetch('https://script.google.com/macros/s/AKfycbw6-L0DhySH_wGQ7Ea3zcB03tdwOPpbBveVdfbFqPji95JcWpreJwABRdacPpiuMzYUJw/exec', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ action: 'delete', sheetName: sheet, rowIndex })
