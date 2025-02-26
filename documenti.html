@@ -79,9 +79,6 @@
             <div class="form-group">
                 <input type="text" class="form-control" name="EventualiProve" placeholder="Eventuali Prove" required>
             </div>
-            <div class="form-group">
-                <input type="date" class="form-control" name="Scadenza" placeholder="Scadenza" required>
-            </div>
             <input type="submit" class="btn btn-primary btn-block" value="Invia">
         </form>
     </div>
@@ -107,13 +104,6 @@
                 alert("Errore durante l'invio del modulo!");
                 console.error('Errore!', error.message);
             });
-        });
-
-        document.addEventListener('DOMContentLoaded', function() {
-            const username = localStorage.getItem('username');
-            if (username) {
-                document.querySelector('input[name="Operatore"]').value = username;
-            }
         });
     </script>
 </body>
