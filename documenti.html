@@ -87,8 +87,8 @@
     </div>
 
     <script>
-        const scriptURL = 'https://script.google.com/macros/s/AKfycbyYlREbE9saziNUjAF-zS434FW_PiZWIEIYS02qImUnszqnQabxjM9UC7jNvYrRANSauw/exec';
-        const form = document.querySelector('#moduloArresto');
+        const scriptURL = 'https://script.google.com/macros/s/AKfycbyoUNuKqaVUyKGZAEGskfG64Pid8FhPqgGpuIxouGzgKXQsu6qWBOP4IERQkycPq3lesg/exec';
+        const form = document.querySelector('#Documenti');
 
         form.addEventListener('submit', e => {
             e.preventDefault();
@@ -112,7 +112,7 @@
         document.addEventListener('DOMContentLoaded', function() {
             const username = localStorage.getItem('username');
             if (username) {
-                document.querySelector('input[name="nome_ign"]').value = username;
+                document.querySelector('input[name="Operatore"]').value = username;
             }
         });
     </script>
