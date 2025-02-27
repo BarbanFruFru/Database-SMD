@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Modulo Cherosene - Sala Indagini</title>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css">
+    <style>
+        body {
+            background-color: #f8f9fa;
+        }
+        .container {
+            max-width: 600px;
+            margin-top: 100px;
+            padding-bottom: 2rem;
+        }
+        .form-group {
+            margin-bottom: 20px;
+        }
+        .logo {
+            max-width: 15%;
+            height: auto; 
+            position: absolute;
+            top: 20px;
+            left: 20px;
+        }
+        .button-top-right {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            background-color: #f8f9fa;
+            border: 1px solid #dee2e6;
+            padding: 0.5rem 1rem;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        .button-top-right:hover {
+            background-color: #e9ecef;
+        }
+        /* Stile per il pulsante disabilitato durante l'invio */
+        .btn:disabled {
+            cursor: not-allowed;
+            opacity: 0.7;
+        }
+        /* Aggiunta di un indicatore di campo obbligatorio */
+        .required-field::after {
+            content: "*";
+            color: red;
+            margin-left: 4px;
+        }
+    </style>
+</head>
+<body>
+    <img src="images/2025-02-04_22.44.27-removebg-preview.png" alt="logo smd" class="logo">
+    <div class="container">
+        <h1 class="text-center mb-4">Modulo Cherosene</h1>
+        <button onclick="window.location.href='sala_indagini.html'" class="button-top-right">
+            Torna Indietro
+        </button>
+        <form id="Documenti">
+            <input type="hidden" name="modulo" value="Documenti">
+            <h4 class="mb-4">Compila il modulo</h4>
+            <div class="form-group">
+                <label class="required-field">Operatore</label>
+                <input type="text" class="form-control" name="Operatore" required>
+            </div>
+            <div class="form-group">
+                <label class="required-field">Data</label>
+                <input type="date" class="form-control" name="Data" required>
+            </div>
+            <div class="form-group">
+                <label class="required-field">Quantità</label>
+                <input type="text" class="form-control" name="Quantità" required>
+            </div>
+            <div class="form-group">
+                <label class="required-field">Firma</label>
+                <input type="text" class="form-control" name="Firma" required>
+            </div>
+            <div class="form-group">
+                <label class="required-field">Consegna</label>
+                <input type="text" class="form-control" name="Consegna" required>
+            </div>
+            <div class="form-group">
+                <label class="">Note Aggiuntive</label>
+                <input type="text" class="form-control" name="Note Aggiuntive">
+            </div>
+            <button type="submit" class="btn btn-primary btn-block" id="submitButton">Invia</button>
+        </form>
+    </div>
+
+    <script>
+        const scriptURL = 'https://script.google.com/macros/s/AKfycbw6-L0DhySH_wGQ7Ea3zcB03tdwOPpbBveVdfbFqPji95JcWpreJwABRdacPpiuMzYUJw/exec';
+        const form = document.querySelector('#Documenti');
+        const submitButton = document.getElementById('submitButton');
+    
+        form.addEventListener('submit', e => {
+            e.preventDefault();
+            
+            // Disabilita il pulsante e cambia il testo
+            submitButton.disabled = true;
+            submitButton.innerHTML = '<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span> Invio in corso...';
+    
+            fetch(scriptURL, { 
+                method: 'POST', 
+                body: new FormData(form)
+            })
+            .then(response => response.text()) // Cambiato da response.json() a response.text()
+            .then(text => {
+                let data;
+                try {
+                    data = JSON.parse(text);
+                } catch (e) {
+                    console.error('Errore nel parsing della risposta:', text);
+                    throw new Error("Errore nella risposta del server");
+                }
+    
+                if (data.error) {
+                    throw new Error(data.error);
+                }
+                
+                alert("Rapporto inviato correttamente.");
+                form.reset();
+            })
+            .catch(error => {
+                alert("Errore durante l'invio del modulo: " + error.message);
+                console.error('Errore!', error);
+            })
+            .finally(() => {
+                // Riabilita il pulsante e ripristina il testo
+                submitButton.disabled = false;
+                submitButton.innerHTML = 'Invia';
+            });
+        });
+    </script>
+</body>
+</html>
