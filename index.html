@@ -82,31 +82,30 @@
     });
 
     document.getElementById('loginForm').addEventListener('submit', function(event) {
-        event.preventDefault();
-        const username = document.getElementById('username').value;
-        const password = document.getElementById('password').value;
+    event.preventDefault();
+    const username = document.getElementById('username').value;
+    const password = document.getElementById('password').value;
 
-        // Memorizza l'username in localStorage
-        localStorage.setItem('username', username);
-
-        fetch('https://script.google.com/macros/s/AKfycbzXi_OCg8atTxTRv_FYJstzWX1RzosSk3S38kFxlTw6sBJqw9ZKyLjMh6mgK7sEm-0v/exec', {
-    method: 'POST',
-    body: new URLSearchParams({
-        username: username,
-        password: password
+    fetch('https://script.google.com/macros/s/AKfycbzSyAXiPy74UWLGdjWRv7mPlL0vGkTCf1-BMSVe6hRy96-NvuGRV8W9Vt_yXPEP0h9u/exec', {
+        method: 'POST',
+        body: new URLSearchParams({ username, password })
     })
-})
-.then(response => response.json())
-.then(data => {
-    if (data.success) {
-        localStorage.setItem('authenticated', 'true');
-        localStorage.setItem('roles', JSON.stringify(data.roles)); // Salvo l'array di ruoli
-        window.location.href = 'old_index.html';
-    } else {
-        document.getElementById('error').style.display = 'block';
-    }
-});
+    .then(response => response.json())
+    .then(data => {
+        if (data.success) {
+            localStorage.setItem('authenticated', 'true');
+            localStorage.setItem('roles', JSON.stringify(data.roles));
+            localStorage.setItem('nome', data.nome);  
+            localStorage.setItem('grado', data.grado);
+            localStorage.setItem('corpo', data.corpo);
+            localStorage.setItem('immagine', data.immagine); // Salva il link dell'immagine
+
+            window.location.href = 'old_index.html';
+        } else {
+            document.getElementById('error').style.display = 'block';
+        }
     });
+});
 </script>
 
 <div class="supporto">Sviluppato da <a href="https://t.me/+2B8-QEDmMNw0YTc0">@rromaanoprojects</a></div>
