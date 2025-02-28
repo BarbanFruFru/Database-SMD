@@ -38,8 +38,10 @@
 
     <script>
         async function loadSheetData() {
+            const apiUrlResponse = await fetch('link_script_dati.txt');
+            const apiUrl = await apiUrlResponse.text();
             const sheet = document.getElementById('sheetFilter').value;
-            const response = await fetch(`https://script.google.com/macros/s/AKfycbwkahEAJTu7_xJPPeNMRGxjM7ieyWUnb1RxYMvOOvz4VyYPzYwSCUiMBJuiQeOv8i33nQ/exec`);
+            const response = await fetch(apiUrl);
             const data = await response.json();
             displayData(sheet, data[sheet]);
         }
@@ -86,7 +88,9 @@
 }
 
         async function deleteReport(sheet, rowIndex) {
-            await fetch('https://script.google.com/macros/s/AKfycbwkahEAJTu7_xJPPeNMRGxjM7ieyWUnb1RxYMvOOvz4VyYPzYwSCUiMBJuiQeOv8i33nQ/exec', {
+            const apiUrlResponse = await fetch('link_script_dati.txt');
+            const apiUrl = await apiUrlResponse.text();
+            await fetch(apiUrl, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ action: 'delete', sheetName: sheet, rowIndex })

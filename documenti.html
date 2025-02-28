@@ -118,7 +118,10 @@
     </div>
 
     <script>
-        const scriptURL = 'https://script.google.com/macros/s/AKfycbw6-L0DhySH_wGQ7Ea3zcB03tdwOPpbBveVdfbFqPji95JcWpreJwABRdacPpiuMzYUJw/exec';
+        const apiUrlResponse = await fetch('link_script_dati.txt');
+        const apiUrl = await apiUrlResponse.text();
+
+        const scriptURL =  apiUrl;
         const form = document.querySelector('#Documenti');
         const submitButton = document.getElementById('submitButton');
     
