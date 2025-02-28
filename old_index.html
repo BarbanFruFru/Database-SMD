@@ -43,14 +43,35 @@
             margin-top: 50px; /* Aumenta lo spazio rispetto ai bottoni principali */
             margin-bottom: 50px; /* Distanza dal supporto */
         }
-
         .admin-btn {
             width: 200px;
             font-size: 20px;
             text-align: center;
             display: none;
         }
-
+        /* Stile per l'immagine utente */
+        .user-image {
+            position: fixed;
+            bottom: 10px;
+            right: 10px;
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
+            cursor: pointer;
+            border: 2px solid gray;
+            display: none; /* Nascondi finché non viene caricato l'utente */
+        }
+        /* Stile per il popup */
+        .popup {
+            position: fixed;
+            bottom: 100px;
+            right: 20px;
+            background: white;
+            padding: 15px;
+            box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.2);
+            border-radius: 8px;
+            display: none; /* Nascondi finché non viene aperto */
+        }
     </style>
 </head>
 <body>
@@ -58,27 +79,61 @@
         if (localStorage.getItem('authenticated') !== 'true') {
             window.location.href = 'index.html';
         }
-    
+
         document.addEventListener('DOMContentLoaded', function() {
             const role = localStorage.getItem('role');
             if (role === 'Admin') {
                 const adminContainer = document.createElement('div');
                 adminContainer.classList.add('admin-container');
-    
+
                 const adminButton = document.createElement('a');
                 adminButton.href = 'admin_dashboard.html';
                 adminButton.classList.add('btn', 'btn-dark', 'admin-btn');
                 adminButton.textContent = '⚙️ Admin Dashboard';
-    
+
                 adminContainer.appendChild(adminButton);
-    
+
                 // Inserisce il bottone prima del supporto
                 const supportDiv = document.querySelector('.supporto');
                 supportDiv.parentNode.insertBefore(adminContainer, supportDiv);
             }
+
+            fetchUserData(); // Carica i dati utente
         });
+
+        function fetchUserData() {
+            fetch('https://script.google.com/macros/s/AKfycbzXi_OCg8atTxTRv_FYJstzWX1RzosSk3S38kFxlTw6sBJqw9ZKyLjMh6mgK7sEm-0v/exec', { 
+                method: 'POST', 
+                body: new URLSearchParams({ 
+                    username: localStorage.getItem('username'),
+                    password: localStorage.getItem('password')
+                })
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    document.getElementById('user-image').src = data.immagine;
+                    document.getElementById('user-image').style.display = 'block';
+
+                    document.getElementById('popup-nome').textContent = data.nome;
+                    document.getElementById('popup-grado').textContent = data.grado;
+                    document.getElementById('popup-corpo').textContent = data.corpo;
+                }
+            })
+            .catch(error => console.error('Errore:', error));
+        }
+
+        function showPopup() {
+            document.getElementById('user-popup').style.display = 'block';
+        }
+
+        function closePopup() {
+            document.getElementById('user-popup').style.display = 'none';
+        }
     </script>
+
     <img src="images/2025-02-04_22.44.27-removebg-preview.png" alt="logo smd" class="logo">
+    
     <div class="container text-center content">
         <h1>Seleziona un reparto</h1>
         <div class="mt-4">
@@ -97,6 +152,21 @@
             <a href="accademia.html" class="btn btn-danger">📚 Accademia</a>
         </div>
     </div>
+
+    <!-- Immagine utente in basso a destra -->
+    <img id="user-image" class="user-image" onclick="showPopup()">
+
+    <!-- Popup con informazioni utente -->
+    <div id="user-popup" class="popup">
+        <div class="popup-content">
+            <h3>INFORMAZIONI UTENTE</h3>
+            <p><strong>Nome:</strong> <span id="popup-nome"></span></p>
+            <p><strong>Grado:</strong> <span id="popup-grado"></span></p>
+            <p><strong>Corpo:</strong> <span id="popup-corpo"></span></p>
+            <button onclick="closePopup()">Chiudi</button>
+        </div>
+    </div>
+
     <div class="supporto">Sviluppato da <a href="https://t.me/+2B8-QEDmMNw0YTc0">@rromaanoprojects</a></div>
 </body>
 </html>
