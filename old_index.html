@@ -131,14 +131,31 @@
     </div>
     
     <script>
-        document.getElementById('user-image').addEventListener('click', function() {
-            document.getElementById('popup-nome').textContent = localStorage.getItem('nome');
-            document.getElementById('popup-grado').textContent = localStorage.getItem('grado');
-            document.getElementById('popup-corpo').textContent = localStorage.getItem('corpo');
-    
-            let popup = document.getElementById('popup-info');
-            popup.style.display = popup.style.display === 'none' ? 'block' : 'none';
-        });
+        document.addEventListener('DOMContentLoaded', function () {
+    // Recupera i dati salvati in localStorage
+    const nome = localStorage.getItem('nome') || 'N/D';
+    const grado = localStorage.getItem('grado') || 'N/D';
+    const corpo = localStorage.getItem('corpo') || 'N/D';
+    const immagine = localStorage.getItem('immagine') || 'https://minotar.net/avatar/Steve';
+
+    // Imposta l'immagine e il comportamento del popup
+    const userImage = document.createElement('img');
+    userImage.src = immagine;
+    userImage.alt = 'Avatar Utente';
+    userImage.style = 'position: fixed; bottom: 20px; right: 20px; width: 60px; height: 60px; border-radius: 50%; cursor: pointer;';
+    document.body.appendChild(userImage);
+
+    // Crea il popup
+    const popup = document.createElement('div');
+    popup.style = 'display: none; position: fixed; bottom: 100px; right: 20px; background: white; padding: 15px; box-shadow: 0 0 10px rgba(0,0,0,0.3); border-radius: 8px;';
+    popup.innerHTML = `<strong>INFORMAZIONI UTENTE</strong><br>Nome: ${nome}<br>Grado: ${grado}<br>Corpo: ${corpo}`;
+    document.body.appendChild(popup);
+
+    // Mostra/Nasconde il popup al click sull'immagine
+    userImage.addEventListener('click', function () {
+        popup.style.display = popup.style.display === 'none' ? 'block' : 'none';
+    });
+});
     </script>
 </body>
 </html>
