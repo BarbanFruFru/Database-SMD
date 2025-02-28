@@ -101,7 +101,7 @@
     if (data.success) {
         localStorage.setItem('authenticated', 'true');
         localStorage.setItem('roles', JSON.stringify(data.roles)); // Salvo l'array di ruoli
-        window.location.href = '/Login/Home/old_index.html';
+        window.location.href = 'old_index.html';
     } else {
         document.getElementById('error').style.display = 'block';
     }
