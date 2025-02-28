@@ -112,7 +112,7 @@
             .then(response => response.json())
             .then(data => {
                 if (data.success) {
-                    document.getElementById('user-image').src = data.immagine;
+                    document.getElementById('user-image').src = data.immagine ? data.immagine : `https://minotar.net/avatar/${localStorage.getItem('username')}`;
                     document.getElementById('user-image').style.display = 'block';
 
                     document.getElementById('popup-nome').textContent = data.nome;
